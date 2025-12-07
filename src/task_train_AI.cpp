@@ -91,18 +91,25 @@ void loop() {
     if (acc > 100) acc = 100;
   }
 
-  // ---- 5) Xuất UART ----
-  // format: real_t,real_h,pred_t,pred_h,acc
-  Serial.print(t, 2); Serial.print(",");
-  Serial.print(h, 2); Serial.print(",");
+// ---- 5) Xuất UART dạng JSON ----
+Serial.print("{\"current_temp\": ");
+Serial.print(t, 2);
+Serial.print(", \"current_humi\": ");
+Serial.print(h, 2);
 
-  if (!buffer_full) {
-    Serial.println(",,,");
-  } else {
-    Serial.print(pred_t, 2); Serial.print(",");
-    Serial.print(pred_h, 2); Serial.print(",");
-    Serial.println((int)acc);
-  }
+if (!buffer_full) {
+    // Chưa đủ 3 mẫu → không có dự đoán
+    Serial.println(", \"predicted_temp\": null, \"predicted_humi\": null, \"accuracy\": null}");
+} else {
+    Serial.print(", \"predicted_temp\": ");
+    Serial.print(pred_t, 2);
+    Serial.print(", \"predicted_humi\": ");
+    Serial.print(pred_h, 2);
+    Serial.print(", \"accuracy\": ");
+    Serial.print((int)acc);
+    Serial.println("}");
+}
+
 
   delay(1000);
 }
